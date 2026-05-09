@@ -28,6 +28,10 @@ export interface DiscordUser {
   bot: boolean;
   publicFlags: number;
   createdAt: string;
+  /** @nullable */
+  clanTag?: string | null;
+  /** @nullable */
+  clanBadgeHash?: string | null;
 }
 
 export interface ApiError {

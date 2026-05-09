@@ -36,4 +36,6 @@ export const GetDiscordUserResponse = zod.object({
   bot: zod.boolean(),
   publicFlags: zod.number(),
   createdAt: zod.string(),
+  clanTag: zod.string().nullish(),
+  clanBadgeHash: zod.string().nullish(),
 });

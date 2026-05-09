@@ -99,6 +99,10 @@ components:
           type: integer
         createdAt:
           type: string
+        clanTag:
+          type: ["string", "null"]
+        clanBadgeHash:
+          type: ["string", "null"]
       required:
         - id
         - username

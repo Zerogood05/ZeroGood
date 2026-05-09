@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
 import { useGetDiscordUser, getGetDiscordUserQueryKey } from "@workspace/api-client-react";
 import { decodePublicFlags } from "@/lib/discord-flags";
+
+const BADGE_BASE = "/api/discord/badge";
 
 export function DiscordLookup() {
   const [searchInput, setSearchInput] = useState("");
@@ -66,8 +67,9 @@ export function DiscordLookup() {
                 <Skeleton className="h-5 w-40 bg-white/10" />
                 <Skeleton className="h-4 w-28 bg-white/10" />
                 <div className="flex gap-2 pt-1">
-                  <Skeleton className="h-6 w-24 bg-white/10 rounded-full" />
-                  <Skeleton className="h-6 w-20 bg-white/10 rounded-full" />
+                  <Skeleton className="h-7 w-7 bg-white/10 rounded" />
+                  <Skeleton className="h-7 w-7 bg-white/10 rounded" />
+                  <Skeleton className="h-7 w-7 bg-white/10 rounded" />
                 </div>
               </div>
             </CardContent>
@@ -105,8 +107,9 @@ export function DiscordLookup() {
             />
 
             <CardContent className="p-5">
-              {/* Avatar + name row */}
-              <div className="flex items-center gap-4">
+              {/* Avatar + name + badges */}
+              <div className="flex items-start gap-4">
+                {/* Avatar */}
                 <div className="shrink-0 -mt-10 p-1 rounded-full bg-black/80 border border-white/10 shadow-lg">
                   {user.avatarUrl ? (
                     <img
@@ -122,43 +125,61 @@ export function DiscordLookup() {
                   )}
                 </div>
 
+                {/* Name block */}
                 <div className="flex-1 min-w-0 pt-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h3
                       data-testid="text-username"
-                      className="text-xl font-display font-bold text-foreground glow-hover truncate"
+                      className="text-xl font-display font-bold text-foreground glow-hover"
                     >
                       {user.globalName || user.username}
                     </h3>
+
+                    {/* Clan tag */}
+                    {user.clanTag && (
+                      <span className="inline-flex items-center gap-1 text-xs font-bold bg-white/10 text-foreground/80 border border-white/15 rounded px-2 py-0.5 tracking-widest font-mono">
+                        {user.clanBadgeHash && (
+                          <img
+                            src={`${BADGE_BASE}/${user.clanBadgeHash}`}
+                            alt=""
+                            className="w-3.5 h-3.5 object-contain"
+                          />
+                        )}
+                        {user.clanTag}
+                      </span>
+                    )}
+
                     {user.bot && (
                       <span className="inline-flex items-center gap-1 text-xs font-semibold bg-primary/20 text-primary border border-primary/30 rounded px-1.5 py-0.5">
                         <Bot className="w-3 h-3" /> BOT
                       </span>
                     )}
                   </div>
-                  <p className="text-muted-foreground font-mono text-sm truncate">
+
+                  <p className="text-muted-foreground font-mono text-sm mt-0.5">
                     @{user.username}
                     {user.discriminator !== "0" ? `#${user.discriminator}` : ""}
                   </p>
-                </div>
 
-                {/* Badges row — top right */}
-                {badges.length > 0 && (
-                  <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
-                    {badges.map((badge) => (
-                      <div key={badge.name} className="relative group/badge cursor-default">
-                        <img
-                          src={badge.icon}
-                          alt={badge.name}
-                          className="w-7 h-7 object-contain drop-shadow-[0_0_6px_rgba(255,255,255,0.25)] hover:scale-125 transition-transform duration-200"
-                        />
-                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 rounded-lg bg-black/90 border border-white/10 text-xs text-white whitespace-nowrap opacity-0 group-hover/badge:opacity-100 transition-opacity duration-150 pointer-events-none z-50 shadow-lg">
-                          {badge.name}
+                  {/* Badges inline — right under handle */}
+                  {badges.length > 0 && (
+                    <div className="flex items-center gap-2 flex-wrap mt-2">
+                      {badges.map((badge) => (
+                        <div key={badge.name} className="relative group/badge cursor-default">
+                          <img
+                            src={`${BADGE_BASE}/${badge.hash}`}
+                            alt={badge.name}
+                            data-testid={`badge-${badge.name.toLowerCase().replace(/\s+/g, "-")}`}
+                            className="w-6 h-6 object-contain hover:scale-125 transition-transform duration-200 drop-shadow-sm"
+                          />
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 rounded-lg bg-black/90 border border-white/10 text-xs text-white whitespace-nowrap opacity-0 group-hover/badge:opacity-100 transition-opacity duration-150 pointer-events-none z-50 shadow-lg">
+                            {badge.name}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="h-px bg-white/8 my-4" />
@@ -173,7 +194,6 @@ export function DiscordLookup() {
                   ID: {user.id}
                 </div>
               </div>
-
             </CardContent>
           </Card>
         )}

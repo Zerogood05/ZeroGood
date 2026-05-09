@@ -56,6 +56,12 @@ router.get("/discord/user/:userId", async (req, res) => {
       accent_color?: number | null;
       bot?: boolean;
       public_flags?: number;
+      clan?: {
+        tag?: string | null;
+        badge?: string | null;
+        identity_guild_id?: string | null;
+        identity_enabled?: boolean;
+      } | null;
     };
 
     const avatar = user.avatar
@@ -79,10 +85,40 @@ router.get("/discord/user/:userId", async (req, res) => {
       bot: user.bot ?? false,
       publicFlags: user.public_flags ?? 0,
       createdAt: snowflakeToDate(user.id),
+      clanTag: user.clan?.tag ?? null,
+      clanBadgeHash: user.clan?.badge ?? null,
     });
   } catch (err) {
     req.log.error({ err }, "Failed to fetch Discord user");
     res.status(500).json({ error: "Internal server error." });
+  }
+});
+
+// Proxy badge images from Discord CDN to avoid browser CORS/referer restrictions
+router.get("/discord/badge/:hash", async (req, res) => {
+  const { hash } = req.params;
+  if (!/^[a-f0-9]{32}$/.test(hash)) {
+    res.status(400).json({ error: "Invalid badge hash." });
+    return;
+  }
+
+  try {
+    const upstream = await fetch(`https://cdn.discordapp.com/badge-icons/${hash}.png`, {
+      headers: { "User-Agent": "DiscordBot (https://github.com, 1.0)" },
+    });
+
+    if (!upstream.ok) {
+      res.status(upstream.status).end();
+      return;
+    }
+
+    const buf = await upstream.arrayBuffer();
+    res.set("Content-Type", "image/png");
+    res.set("Cache-Control", "public, max-age=86400");
+    res.send(Buffer.from(buf));
+  } catch (err) {
+    req.log.error({ err }, "Failed to proxy badge image");
+    res.status(502).end();
   }
 });
 
