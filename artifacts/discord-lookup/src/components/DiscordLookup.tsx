@@ -7,8 +7,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useGetDiscordUser, getGetDiscordUserQueryKey } from "@workspace/api-client-react";
 import { decodePublicFlags } from "@/lib/discord-flags";
 
-const BADGE_BASE = "/api/discord/badge";
-
 export function DiscordLookup() {
   const [searchInput, setSearchInput] = useState("");
   const [userId, setUserId] = useState("");
@@ -167,7 +165,7 @@ export function DiscordLookup() {
                       {badges.map((badge) => (
                         <div key={badge.name} className="relative group/badge cursor-default">
                           <img
-                            src={`${BADGE_BASE}/${badge.hash}`}
+                            src={badge.icon}
                             alt={badge.name}
                             data-testid={`badge-${badge.name.toLowerCase().replace(/\s+/g, "-")}`}
                             className="w-6 h-6 object-contain hover:scale-125 transition-transform duration-200 drop-shadow-sm"
