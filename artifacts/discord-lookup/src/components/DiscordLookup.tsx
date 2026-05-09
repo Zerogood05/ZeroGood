@@ -142,20 +142,17 @@ export function DiscordLookup() {
                   </p>
                 </div>
 
-                {/* Badges (icons only, top right) */}
+                {/* Badges row — top right */}
                 {badges.length > 0 && (
-                  <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end max-w-[120px]">
+                  <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
                     {badges.map((badge) => (
-                      <div key={badge.name} className="relative group/badge">
+                      <div key={badge.name} className="relative group/badge cursor-default">
                         <img
                           src={badge.icon}
                           alt={badge.name}
-                          className="w-6 h-6 object-contain drop-shadow-sm"
-                          onError={(e) => {
-                            (e.currentTarget as HTMLImageElement).style.display = "none";
-                          }}
+                          className="w-7 h-7 object-contain drop-shadow-[0_0_6px_rgba(255,255,255,0.25)] hover:scale-125 transition-transform duration-200"
                         />
-                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 rounded bg-black/90 border border-white/10 text-xs text-white whitespace-nowrap opacity-0 group-hover/badge:opacity-100 transition-opacity pointer-events-none z-50">
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 rounded-lg bg-black/90 border border-white/10 text-xs text-white whitespace-nowrap opacity-0 group-hover/badge:opacity-100 transition-opacity duration-150 pointer-events-none z-50 shadow-lg">
                           {badge.name}
                         </div>
                       </div>
@@ -177,26 +174,6 @@ export function DiscordLookup() {
                 </div>
               </div>
 
-              {/* Badge pills (with name text) */}
-              {badges.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {badges.map((badge) => (
-                    <Badge
-                      key={badge.name}
-                      variant="outline"
-                      className="flex items-center gap-1.5 border-white/10 bg-white/5 text-foreground/80 font-medium text-xs py-1"
-                    >
-                      <img
-                        src={badge.icon}
-                        alt=""
-                        className="w-3.5 h-3.5 object-contain"
-                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-                      />
-                      {badge.name}
-                    </Badge>
-                  ))}
-                </div>
-              )}
             </CardContent>
           </Card>
         )}
