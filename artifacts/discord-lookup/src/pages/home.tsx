@@ -14,13 +14,13 @@ export default function Home() {
         <header className="text-center space-y-4">
           <div className="inline-flex items-center justify-center p-2 bg-primary/10 rounded-full border border-primary/20 mb-4 text-primary backdrop-blur-md">
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse mr-2" />
-            <span className="text-xs font-mono font-medium uppercase tracking-wider pr-2">System Online</span>
+            <span className="text-xs font-mono font-medium uppercase tracking-wider pr-2">Sistema en línea</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-display font-black tracking-tighter glow-hover">
-            NEXUS <span className="text-primary">CORE</span>
+            ZERO <span className="text-primary">GOOD</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground font-mono max-w-md mx-auto">
-            Terminal interface // User identification protocol
+            Interfaz terminal // Protocolo de identificación
           </p>
         </header>
 

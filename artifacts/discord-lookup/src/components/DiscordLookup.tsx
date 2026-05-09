@@ -29,8 +29,8 @@ export function DiscordLookup() {
   return (
     <div className="w-full max-w-2xl mx-auto flex flex-col gap-8">
       <div className="text-center space-y-4">
-        <h2 className="text-3xl font-display font-bold glow-hover tracking-tight">Discord Identifier</h2>
-        <p className="text-muted-foreground">Scan the network for a user by their snowflake ID.</p>
+        <h2 className="text-3xl font-display font-bold glow-hover tracking-tight">Buscar en Discord</h2>
+        <p className="text-muted-foreground">Escanea la red para encontrar un usuario por su ID de Snowflake.</p>
       </div>
 
       <form onSubmit={handleSearch} className="flex gap-3">
@@ -45,7 +45,7 @@ export function DiscordLookup() {
         </div>
         <Button type="submit" size="lg" className="h-12 px-8 bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:shadow-[0_0_25px_rgba(168,85,247,0.5)] transition-all active:scale-95 font-medium">
           <Search className="w-4 h-4 mr-2" />
-          Lookup
+          Buscar
         </Button>
       </form>
 
@@ -74,7 +74,7 @@ export function DiscordLookup() {
             <CardContent className="p-8 text-center flex flex-col items-center gap-3">
               <ShieldCheck className="w-10 h-10 text-destructive opacity-80" />
               <p className="text-destructive-foreground font-medium">
-                {(error as any)?.error || "Failed to locate user. Make sure the ID is correct and the bot token is configured."}
+                {(error as any)?.error || "No se pudo encontrar al usuario. Verifica que el ID sea correcto y que el token del bot esté configurado."}
               </p>
             </CardContent>
           </Card>
@@ -125,7 +125,7 @@ export function DiscordLookup() {
                 <div className="flex flex-wrap gap-2 pt-2">
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-white/5 px-2.5 py-1.5 rounded-md border border-white/5">
                     <Calendar className="w-3.5 h-3.5" />
-                    <span>Created {new Date(user.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                    <span>Creado el {new Date(user.createdAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
                   </div>
                   
                   {decodePublicFlags(user.publicFlags).map(flag => (
