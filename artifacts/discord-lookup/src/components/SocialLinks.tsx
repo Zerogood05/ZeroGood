@@ -1,4 +1,5 @@
 import { SiDiscord, SiGithub, SiX, SiInstagram, SiYoutube, SiTwitch } from "react-icons/si";
+import { ExternalLink } from "lucide-react";
 
 export function SocialLinks() {
   const links = [
@@ -30,30 +31,49 @@ export function SocialLinks() {
         ))}
       </div>
 
-      <div className="mt-2 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl p-6 flex flex-col gap-4 shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
-        <h3 className="text-lg font-display font-bold text-foreground glow-hover tracking-tight">
-          Gatitos World 2
-        </h3>
+      <div className="mt-2 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 flex flex-col gap-5 shadow-[0_4px_30px_rgba(0,0,0,0.3)]">
+        <div className="text-center">
+          <h3 className="text-2xl font-display font-bold text-foreground glow-hover tracking-tight">
+            Gatitos World 2
+          </h3>
+          <p className="mt-2 text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
+            La mejor comunidad hispanohablante de Discord. Eventos exclusivos, sorteos, guías y mucho más.
+          </p>
+        </div>
+
+        <div className="h-px bg-white/10" />
+
         <div className="flex items-center gap-4 flex-wrap">
-          <span className="text-sm text-muted-foreground font-mono">Cargo:</span>
+          <span className="text-sm text-muted-foreground font-mono shrink-0">Cargo:</span>
           <button
             data-testid="badge-supervisor"
             className="group relative px-5 py-2 rounded-lg border border-white/10 bg-white/5 text-sm font-semibold tracking-wide text-foreground transition-all duration-300 overflow-hidden hover:-translate-y-0.5 hover:border-green-400/40 hover:shadow-[0_0_24px_rgba(74,222,128,0.35)]"
           >
-            <span className="relative z-10 transition-colors duration-300 group-hover:text-green-300">
-              Supervisor
-            </span>
+            <span className="relative z-10 transition-colors duration-300 group-hover:text-green-300">Supervisor</span>
             <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-green-600/20 via-emerald-400/20 to-green-500/20" />
           </button>
           <button
             data-testid="badge-dev"
             className="group relative px-5 py-2 rounded-lg border border-white/10 bg-white/5 text-sm font-semibold tracking-wide text-foreground transition-all duration-300 overflow-hidden hover:-translate-y-0.5 hover:border-red-400/40 hover:shadow-[0_0_24px_rgba(248,113,113,0.35)]"
           >
-            <span className="relative z-10 transition-colors duration-300 group-hover:text-red-300">
-              Dev
-            </span>
+            <span className="relative z-10 transition-colors duration-300 group-hover:text-red-300">Dev</span>
             <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-red-600/20 via-rose-400/20 to-red-500/20" />
           </button>
+        </div>
+
+        <div className="flex items-center gap-4 flex-wrap">
+          <span className="text-sm text-muted-foreground font-mono shrink-0">Discord:</span>
+          <a
+            href="https://discord.gg/gatitos2"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid="link-gatitos-discord"
+            className="flex items-center gap-2 text-sm font-medium text-[#5865F2] hover:text-[#7289da] transition-colors duration-200 hover:underline underline-offset-4"
+          >
+            <SiDiscord className="w-4 h-4" />
+            discord.gg/gatitos2
+            <ExternalLink className="w-3 h-3 opacity-60" />
+          </a>
         </div>
       </div>
     </div>
