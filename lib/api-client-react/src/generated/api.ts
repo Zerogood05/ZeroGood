@@ -13,7 +13,7 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { HealthStatus } from "./api.schemas";
+import type { ApiError, DiscordUser, HealthStatus } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
 import type { ErrorType } from "../custom-fetch";
@@ -92,6 +92,94 @@ export function useHealthCheck<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getHealthCheckQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Fetches public Discord user info by their Snowflake ID
+ * @summary Get Discord user by ID
+ */
+export const getGetDiscordUserUrl = (userId: string) => {
+  return `/api/discord/user/${userId}`;
+};
+
+export const getDiscordUser = async (
+  userId: string,
+  options?: RequestInit,
+): Promise<DiscordUser> => {
+  return customFetch<DiscordUser>(getGetDiscordUserUrl(userId), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetDiscordUserQueryKey = (userId: string) => {
+  return [`/api/discord/user/${userId}`] as const;
+};
+
+export const getGetDiscordUserQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDiscordUser>>,
+  TError = ErrorType<ApiError>,
+>(
+  userId: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getDiscordUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetDiscordUserQueryKey(userId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDiscordUser>>> = ({
+    signal,
+  }) => getDiscordUser(userId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getDiscordUser>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetDiscordUserQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDiscordUser>>
+>;
+export type GetDiscordUserQueryError = ErrorType<ApiError>;
+
+/**
+ * @summary Get Discord user by ID
+ */
+
+export function useGetDiscordUser<
+  TData = Awaited<ReturnType<typeof getDiscordUser>>,
+  TError = ErrorType<ApiError>,
+>(
+  userId: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getDiscordUser>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetDiscordUserQueryOptions(userId, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

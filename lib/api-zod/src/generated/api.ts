@@ -14,3 +14,26 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * Fetches public Discord user info by their Snowflake ID
+ * @summary Get Discord user by ID
+ */
+export const GetDiscordUserParams = zod.object({
+  userId: zod.coerce.string().describe("Discord user Snowflake ID"),
+});
+
+export const GetDiscordUserResponse = zod.object({
+  id: zod.string(),
+  username: zod.string(),
+  discriminator: zod.string(),
+  globalName: zod.string().nullish(),
+  avatar: zod.string().nullish(),
+  avatarUrl: zod.string().nullish(),
+  banner: zod.string().nullish(),
+  bannerUrl: zod.string().nullish(),
+  accentColor: zod.number().nullish(),
+  bot: zod.boolean(),
+  publicFlags: zod.number(),
+  createdAt: zod.string(),
+});

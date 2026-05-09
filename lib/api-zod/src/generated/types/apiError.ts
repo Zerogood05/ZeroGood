@@ -6,6 +6,6 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export * from "./apiError";
-export * from "./discordUser";
-export * from "./healthStatus";
+export interface ApiError {
+  error: string;
+}

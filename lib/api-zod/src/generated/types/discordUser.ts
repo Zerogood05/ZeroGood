@@ -5,9 +5,6 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-export interface HealthStatus {
-  status: string;
-}
 
 export interface DiscordUser {
   id: string;
@@ -28,8 +25,4 @@ export interface DiscordUser {
   bot: boolean;
   publicFlags: number;
   createdAt: string;
-}
-
-export interface ApiError {
-  error: string;
 }

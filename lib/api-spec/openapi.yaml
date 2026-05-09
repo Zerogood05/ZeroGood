@@ -1,6 +1,5 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
   description: API specification
@@ -10,6 +9,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: discord
+    description: Discord user lookup
 paths:
   /healthz:
     get:
@@ -24,6 +25,44 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /discord/user/{userId}:
+    get:
+      operationId: getDiscordUser
+      tags: [discord]
+      summary: Get Discord user by ID
+      description: Fetches public Discord user info by their Snowflake ID
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Discord user Snowflake ID
+      responses:
+        "200":
+          description: Discord user found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiscordUser"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "400":
+          description: Invalid user ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Discord bot token not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +72,44 @@ components:
           type: string
       required:
         - status
-
+    DiscordUser:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        discriminator:
+          type: string
+        globalName:
+          type: ["string", "null"]
+        avatar:
+          type: ["string", "null"]
+        avatarUrl:
+          type: ["string", "null"]
+        banner:
+          type: ["string", "null"]
+        bannerUrl:
+          type: ["string", "null"]
+        accentColor:
+          type: ["integer", "null"]
+        bot:
+          type: boolean
+        publicFlags:
+          type: integer
+        createdAt:
+          type: string
+      required:
+        - id
+        - username
+        - discriminator
+        - bot
+        - publicFlags
+        - createdAt
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
