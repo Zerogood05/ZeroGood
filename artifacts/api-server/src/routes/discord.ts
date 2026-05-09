@@ -87,6 +87,7 @@ router.get("/discord/user/:userId", async (req, res) => {
       createdAt: snowflakeToDate(user.id),
       clanTag: user.clan?.tag ?? null,
       clanBadgeHash: user.clan?.badge ?? null,
+      clanGuildId: user.clan?.identity_guild_id ?? null,
     });
   } catch (err) {
     req.log.error({ err }, "Failed to fetch Discord user");
@@ -94,32 +95,36 @@ router.get("/discord/user/:userId", async (req, res) => {
   }
 });
 
-// Proxy badge images from Discord CDN to avoid browser CORS/referer restrictions
-router.get("/discord/badge/:hash", async (req, res) => {
-  const { hash } = req.params;
-  if (!/^[a-f0-9]{32}$/.test(hash)) {
-    res.status(400).json({ error: "Invalid badge hash." });
-    return;
-  }
-
+async function proxyImage(url: string, res: import("express").Response, log: import("pino").Logger) {
   try {
-    const upstream = await fetch(`https://cdn.discordapp.com/badge-icons/${hash}.png`, {
+    const upstream = await fetch(url, {
       headers: { "User-Agent": "DiscordBot (https://github.com, 1.0)" },
     });
-
-    if (!upstream.ok) {
-      res.status(upstream.status).end();
-      return;
-    }
-
+    if (!upstream.ok) { res.status(upstream.status).end(); return; }
     const buf = await upstream.arrayBuffer();
     res.set("Content-Type", "image/png");
     res.set("Cache-Control", "public, max-age=86400");
     res.send(Buffer.from(buf));
   } catch (err) {
-    req.log.error({ err }, "Failed to proxy badge image");
+    log.error({ err }, "Failed to proxy image");
     res.status(502).end();
   }
+}
+
+// Proxy standard badge icons
+router.get("/discord/badge/:hash", async (req, res) => {
+  const { hash } = req.params;
+  if (!/^[a-f0-9]{32}$/.test(hash)) { res.status(400).json({ error: "Invalid badge hash." }); return; }
+  await proxyImage(`https://cdn.discordapp.com/badge-icons/${hash}.png`, res, req.log);
+});
+
+// Proxy clan/guild badge icons
+router.get("/discord/clan-badge/:guildId/:hash", async (req, res) => {
+  const { guildId, hash } = req.params;
+  if (!/^\d{17,20}$/.test(guildId) || !/^[a-f0-9]{32}$/.test(hash)) {
+    res.status(400).json({ error: "Invalid clan badge parameters." }); return;
+  }
+  await proxyImage(`https://cdn.discordapp.com/clan-badges/${guildId}/${hash}.png`, res, req.log);
 });
 
 export default router;

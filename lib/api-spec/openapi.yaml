@@ -103,6 +103,8 @@ components:
           type: ["string", "null"]
         clanBadgeHash:
           type: ["string", "null"]
+        clanGuildId:
+          type: ["string", "null"]
       required:
         - id
         - username

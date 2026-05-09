@@ -32,6 +32,8 @@ export interface DiscordUser {
   clanTag?: string | null;
   /** @nullable */
   clanBadgeHash?: string | null;
+  /** @nullable */
+  clanGuildId?: string | null;
 }
 
 export interface ApiError {

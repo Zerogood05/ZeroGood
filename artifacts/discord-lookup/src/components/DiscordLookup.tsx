@@ -138,9 +138,9 @@ export function DiscordLookup() {
                     {/* Clan tag */}
                     {user.clanTag && (
                       <span className="inline-flex items-center gap-1 text-xs font-bold bg-white/10 text-foreground/80 border border-white/15 rounded px-2 py-0.5 tracking-widest font-mono">
-                        {user.clanBadgeHash && (
+                        {user.clanBadgeHash && user.clanGuildId && (
                           <img
-                            src={`${BADGE_BASE}/${user.clanBadgeHash}`}
+                            src={`/api/discord/clan-badge/${user.clanGuildId}/${user.clanBadgeHash}`}
                             alt=""
                             className="w-3.5 h-3.5 object-contain"
                           />

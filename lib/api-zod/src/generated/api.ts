@@ -38,4 +38,5 @@ export const GetDiscordUserResponse = zod.object({
   createdAt: zod.string(),
   clanTag: zod.string().nullish(),
   clanBadgeHash: zod.string().nullish(),
+  clanGuildId: zod.string().nullish(),
 });
