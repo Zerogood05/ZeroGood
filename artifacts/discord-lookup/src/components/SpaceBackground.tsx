@@ -1,14 +1,26 @@
 import { useEffect, useRef } from "react";
 
 interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
+  x: number; y: number;
+  vx: number; vy: number;
   radius: number;
 }
 
-export function SpaceBackground() {
+interface Meteor {
+  x: number; y: number;
+  vx: number; vy: number;
+  length: number;
+  opacity: number;
+  life: number;
+  maxLife: number;
+}
+
+interface Props {
+  parallaxX?: number;
+  parallaxY?: number;
+}
+
+export function SpaceBackground({ parallaxX = 0, parallaxY = 0 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: -9999, y: -9999 });
 
@@ -21,8 +33,8 @@ export function SpaceBackground() {
     let animationFrameId: number;
 
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth + 60;
+      canvas.height = window.innerHeight + 60;
     };
     window.addEventListener("resize", resize);
     resize();
@@ -48,11 +60,38 @@ export function SpaceBackground() {
       radius: Math.random() * 1.5 + 0.5,
     }));
 
+    const meteors: Meteor[] = [];
+    let meteorTimer = 0;
+    const METEOR_INTERVAL = 180 + Math.random() * 300; // frames between meteors
+
+    const spawnMeteor = () => {
+      const side = Math.random();
+      let x: number, y: number;
+      if (side < 0.6) {
+        x = Math.random() * canvas.width * 0.6;
+        y = -20;
+      } else {
+        x = -20;
+        y = Math.random() * canvas.height * 0.5;
+      }
+      const speed = 4 + Math.random() * 5;
+      const angle = (Math.PI / 4) + (Math.random() - 0.5) * 0.4;
+      meteors.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        length: 50 + Math.random() * 80,
+        opacity: 0.6 + Math.random() * 0.4,
+        life: 0,
+        maxLife: 60 + Math.random() * 40,
+      });
+    };
+
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       const mouse = mouseRef.current;
 
+      // ── Particles ──
       for (const p of particles) {
         p.x += p.vx;
         p.y += p.vy;
@@ -68,7 +107,6 @@ export function SpaceBackground() {
         const dym = p.y - mouse.y;
         const distToMouse = Math.sqrt(dxm * dxm + dym * dym);
         const fadeP = Math.max(0, 1 - distToMouse / REVEAL_RADIUS);
-
         if (fadeP <= 0) continue;
 
         ctx.beginPath();
@@ -122,6 +160,51 @@ export function SpaceBackground() {
         ctx.fill();
       }
 
+      // ── Meteors ──
+      meteorTimer++;
+      if (meteorTimer >= METEOR_INTERVAL) {
+        spawnMeteor();
+        meteorTimer = 0;
+        // randomize next interval
+        (METEOR_INTERVAL as unknown as number);
+      }
+
+      for (let i = meteors.length - 1; i >= 0; i--) {
+        const m = meteors[i];
+        m.x += m.vx;
+        m.y += m.vy;
+        m.life++;
+
+        const progress = m.life / m.maxLife;
+        const alpha = m.opacity * (1 - progress);
+
+        if (alpha <= 0.01 || m.x > canvas.width + 100 || m.y > canvas.height + 100) {
+          meteors.splice(i, 1);
+          continue;
+        }
+
+        const tailX = m.x - m.vx / Math.hypot(m.vx, m.vy) * m.length;
+        const tailY = m.y - m.vy / Math.hypot(m.vx, m.vy) * m.length;
+
+        const grad = ctx.createLinearGradient(tailX, tailY, m.x, m.y);
+        grad.addColorStop(0, `rgba(255,255,255,0)`);
+        grad.addColorStop(0.7, `rgba(200,180,255,${alpha * 0.5})`);
+        grad.addColorStop(1, `rgba(255,255,255,${alpha})`);
+
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(m.x, m.y);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.5;
+        ctx.lineCap = "round";
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, 1.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.fill();
+      }
+
       animationFrameId = requestAnimationFrame(render);
     };
 
@@ -138,7 +221,14 @@ export function SpaceBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-[-1] pointer-events-none"
+      className="fixed z-[-1] pointer-events-none"
+      style={{
+        top: "-30px",
+        left: "-30px",
+        transform: `translate(${parallaxX}px, ${parallaxY}px)`,
+        transition: "transform 0.1s ease-out",
+        willChange: "transform",
+      }}
     />
   );
 }

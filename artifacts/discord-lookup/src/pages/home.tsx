@@ -1,26 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { SpaceBackground } from "@/components/SpaceBackground";
 import { DiscordLookup } from "@/components/DiscordLookup";
 import { SocialLinks } from "@/components/SocialLinks";
+import { MusicPlayer } from "@/components/MusicPlayer";
 
 type Tab = "discord" | "contacto";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab | null>(null);
+  const [parallax, setParallax] = useState({ x: 0, y: 0 });
+  const targetRef = useRef({ x: 0, y: 0 });
+  const currentRef = useRef({ x: 0, y: 0 });
+  const rafRef = useRef<number | null>(null);
 
-  const handleTab = (tab: Tab) => {
-    setActiveTab(tab);
-  };
+  useEffect(() => {
+    const STRENGTH = 12;
+
+    const onMove = (e: MouseEvent) => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      targetRef.current = {
+        x: ((e.clientX - cx) / cx) * -STRENGTH,
+        y: ((e.clientY - cy) / cy) * -STRENGTH,
+      };
+    };
+    window.addEventListener("mousemove", onMove);
+
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+    const tick = () => {
+      const cur = currentRef.current;
+      const tgt = targetRef.current;
+      cur.x = lerp(cur.x, tgt.x, 0.05);
+      cur.y = lerp(cur.y, tgt.y, 0.05);
+      setParallax({ x: Math.round(cur.x * 100) / 100, y: Math.round(cur.y * 100) / 100 });
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   return (
     <main className="min-h-[100dvh] relative overflow-hidden text-foreground selection:bg-primary/30">
-      <SpaceBackground />
+      <SpaceBackground parallaxX={parallax.x} parallaxY={parallax.y} />
 
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background pointer-events-none z-[-1]" />
 
       {/* Nav — always visible */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-1 p-4 backdrop-blur-md border-b border-white/5 bg-background/40">
-        {/* Home button — only visible when a tab is active */}
         {activeTab !== null && (
           <button
             onClick={() => setActiveTab(null)}
@@ -36,7 +66,7 @@ export default function Home() {
         <div className="flex gap-1 bg-white/5 p-1 rounded-xl border border-white/10">
           <button
             data-testid="tab-discord"
-            onClick={() => handleTab("discord")}
+            onClick={() => setActiveTab("discord")}
             className={`relative px-6 py-2.5 rounded-lg text-sm font-medium tracking-wide transition-all duration-300 ${
               activeTab === "discord"
                 ? "bg-primary text-primary-foreground shadow-[0_0_20px_rgba(168,85,247,0.4)]"
@@ -47,7 +77,7 @@ export default function Home() {
           </button>
           <button
             data-testid="tab-contacto"
-            onClick={() => handleTab("contacto")}
+            onClick={() => setActiveTab("contacto")}
             className={`relative px-6 py-2.5 rounded-lg text-sm font-medium tracking-wide transition-all duration-300 ${
               activeTab === "contacto"
                 ? "bg-primary text-primary-foreground shadow-[0_0_20px_rgba(168,85,247,0.4)]"
@@ -59,7 +89,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Landing — shown only when no tab is active */}
+      {/* Landing */}
       {activeTab === null && (
         <div className="flex flex-col items-center justify-center min-h-[100dvh] gap-6 px-4 text-center">
           <div className="inline-flex items-center justify-center p-2 bg-primary/10 rounded-full border border-primary/20 text-primary backdrop-blur-md">
@@ -75,7 +105,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Tab content — shown when a tab is active */}
+      {/* Tab content */}
       {activeTab !== null && (
         <div className="container mx-auto px-4 pt-32 pb-24 flex flex-col items-center justify-center min-h-[100dvh]">
           <div className="w-full relative z-10">
@@ -83,6 +113,9 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* Music player — always visible */}
+      <MusicPlayer />
     </main>
   );
 }
