@@ -1,6 +1,6 @@
 kind = "web"
 previewPath = "/"
-title = "Discord Lookup & Social Links"
+title = "Zero Good"
 version = "1.0.0"
 id = "artifacts/discord-lookup"
 router = "path"
