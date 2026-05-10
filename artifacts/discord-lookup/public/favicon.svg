@@ -1,3 +1,45 @@
-<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="180" height="180" rx="36" fill="#FF3C00"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1a0a2e"/>
+      <stop offset="100%" stop-color="#0a0a0f"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="1.8"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+
+  <!-- Glow layer -->
+  <rect width="32" height="32" rx="7" fill="url(#glow)"/>
+
+  <!-- Border -->
+  <rect x="0.5" y="0.5" width="31" height="31" rx="6.5"
+        stroke="#a855f7" stroke-opacity="0.45" stroke-width="1"/>
+
+  <!-- Blurred glow behind Z -->
+  <text x="16" y="23"
+        font-family="'Arial Black','Impact',sans-serif"
+        font-weight="900" font-size="21"
+        text-anchor="middle"
+        fill="#a855f7"
+        filter="url(#blur)"
+        opacity="0.7">Z</text>
+
+  <!-- Z letter crisp -->
+  <text x="16" y="23"
+        font-family="'Arial Black','Impact',sans-serif"
+        font-weight="900" font-size="21"
+        text-anchor="middle"
+        fill="#ede9fe">Z</text>
+
+  <!-- Accent line bottom -->
+  <rect x="6" y="26.5" width="20" height="1.5" rx="0.75"
+        fill="#a855f7" opacity="0.65"/>
 </svg>
