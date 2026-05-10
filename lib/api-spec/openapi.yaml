@@ -105,6 +105,8 @@ components:
           type: ["string", "null"]
         clanGuildId:
           type: ["string", "null"]
+        premiumType:
+          type: integer
       required:
         - id
         - username

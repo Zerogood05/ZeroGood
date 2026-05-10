@@ -56,6 +56,7 @@ router.get("/discord/user/:userId", async (req, res) => {
       accent_color?: number | null;
       bot?: boolean;
       public_flags?: number;
+      premium_type?: number;
       clan?: {
         tag?: string | null;
         badge?: string | null;
@@ -88,6 +89,7 @@ router.get("/discord/user/:userId", async (req, res) => {
       clanTag: user.clan?.tag ?? null,
       clanBadgeHash: user.clan?.badge ?? null,
       clanGuildId: user.clan?.identity_guild_id ?? null,
+      premiumType: user.premium_type ?? 0,
     });
   } catch (err) {
     req.log.error({ err }, "Failed to fetch Discord user");

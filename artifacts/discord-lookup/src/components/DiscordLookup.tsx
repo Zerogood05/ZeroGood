@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetDiscordUser, getGetDiscordUserQueryKey } from "@workspace/api-client-react";
-import { decodePublicFlags } from "@/lib/discord-flags";
+import { decodePublicFlags, getNitroBadge } from "@/lib/discord-flags";
 
 export function DiscordLookup() {
   const [searchInput, setSearchInput] = useState("");
@@ -23,7 +23,12 @@ export function DiscordLookup() {
     if (searchInput.trim()) setUserId(searchInput.trim());
   };
 
-  const badges = user ? decodePublicFlags(user.publicFlags) : [];
+  const badges = user
+    ? [
+        ...decodePublicFlags(user.publicFlags),
+        ...(getNitroBadge(user.premiumType ?? 0) ? [getNitroBadge(user.premiumType ?? 0)!] : []),
+      ]
+    : [];
 
   return (
     <div className="w-full max-w-2xl mx-auto flex flex-col gap-8">

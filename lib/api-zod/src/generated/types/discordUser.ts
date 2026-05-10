@@ -31,4 +31,5 @@ export interface DiscordUser {
   clanBadgeHash?: string | null;
   /** @nullable */
   clanGuildId?: string | null;
+  premiumType?: number;
 }
