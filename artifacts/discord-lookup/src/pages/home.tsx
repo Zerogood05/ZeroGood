@@ -3,6 +3,7 @@ import { SpaceBackground } from "@/components/SpaceBackground";
 import { DiscordLookup } from "@/components/DiscordLookup";
 import { SocialLinks } from "@/components/SocialLinks";
 import { MusicPlayer } from "@/components/MusicPlayer";
+import { SpaceClock } from "@/components/SpaceClock";
 
 type Tab = "discord" | "contacto";
 
@@ -116,6 +117,9 @@ export default function Home() {
 
       {/* Music player — always visible */}
       <MusicPlayer />
+
+      {/* Space clock — always visible */}
+      <SpaceClock />
     </main>
   );
 }
