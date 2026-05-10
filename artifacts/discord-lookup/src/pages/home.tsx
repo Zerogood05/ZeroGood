@@ -20,6 +20,19 @@ export default function Home() {
 
       {/* Nav — always visible */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-1 p-4 backdrop-blur-md border-b border-white/5 bg-background/40">
+        {/* Home button — only visible when a tab is active */}
+        {activeTab !== null && (
+          <button
+            onClick={() => setActiveTab(null)}
+            title="Inicio"
+            className="absolute left-4 flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white/10 border border-transparent hover:border-white/10 transition-all duration-200"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+              <path d="M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z"/>
+            </svg>
+            <span className="hidden sm:inline">Inicio</span>
+          </button>
+        )}
         <div className="flex gap-1 bg-white/5 p-1 rounded-xl border border-white/10">
           <button
             data-testid="tab-discord"
